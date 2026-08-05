@@ -1,0 +1,451 @@
+---
+title: 토요하자 DB ERD (PostgreSQL 16)
+---
+erDiagram
+
+    TOYO_STUD_INFO {
+        varchar stud_no PK
+        varchar ban FK
+        varchar stud_name
+        varchar grade
+        varchar team
+        varchar attend_yn
+        varchar sex
+        varchar one_year_yn
+        varchar use_yn
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+        varchar parents_name
+        varchar stud_img_path
+        varchar stud_img_name
+        varchar dream_kind FK
+        varchar parents_no_hp_enc
+    }
+
+    TOYO_BAN_CODE_NAME {
+        varchar ban PK
+        varchar ban_name
+        varchar use_yn
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+        varchar ban_hp
+        bytea ban_hp_enc
+    }
+
+    TOYO_DREAM_KIND {
+        varchar dream_kind PK
+        varchar dream_kind_name
+        varchar grade
+        varchar year_course
+        varchar year
+        varchar quarter
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    TOYO_KIND_NAME {
+        varchar kind PK
+        varchar kind_name
+        varchar use_yn
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_STUD_CODE_NAME {
+        varchar subject PK
+        varchar subject_name
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_ID_INFO {
+        varchar id PK
+        varchar passwd
+        varchar k_name
+        varchar use_yn
+        varchar token
+        varchar auth
+        timestamp login_first_time
+        timestamp login_last_time
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+        varchar parents_name
+        varchar ssn
+        varchar id_img_path
+        varchar id_img_name
+        varchar group_code
+    }
+
+    TOYO_STUD_REG_FEE {
+        varchar stud_no PK, FK
+        varchar reg_fee_kind
+        varchar reason
+        varchar new_yn
+        varchar year
+        varchar quarter
+        varchar enroll_date
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_STUD_2HAKGI_NEW_INFO {
+        varchar stud_no PK, FK
+        varchar stud_name
+        varchar sex
+        varchar grade
+        varchar parent_name
+        varchar parent_hp
+        varchar request_teacher_name
+        varchar request_method
+        varchar church_reg_status
+        varchar etc
+        varchar reg_fee_kind
+        varchar progress_status
+        varchar enroll_date
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+        varchar dream_kind_1
+        varchar dream_kind_2
+        varchar dream_kind_3
+    }
+
+    TOYO_STUD_NEW_INFO {
+        varchar stud_no PK, FK
+        varchar stud_name
+        varchar sex
+        varchar grade
+        varchar parent_name
+        varchar parent_hp
+        varchar request_teacher_name
+        varchar request_method
+        varchar church_reg_status
+        varchar etc
+        varchar reg_fee_kind
+        varchar progress_status
+        varchar enroll_date
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+        varchar dream_kind_1
+        varchar dream_kind_2
+        varchar dream_kind_3
+    }
+
+    TOYO_STUD_2HAKGI_INFO {
+        varchar stud_no PK, FK
+        varchar ban FK
+        varchar stud_name
+        varchar grade
+        varchar team
+        varchar rereg_kind
+        varchar reason
+        varchar enroll_date
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_STUD_FIELD_ATTEND {
+        varchar enroll_date PK
+        varchar ban PK, FK
+        varchar stud_no PK, FK
+        varchar field_attend_kind
+        varchar reason
+        varchar field_attend_nausea
+        varchar field_attend_bus
+        varchar field_attend_insurance
+        varchar confirm_yn
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_STUD_FIELD_ATTEND_TEACHER {
+        varchar teacher_no PK
+        varchar teacher_name
+        varchar sex
+        varchar hp
+        varchar field_attend_kind
+        varchar field_attend_nausea
+        varchar field_attend_bus
+        varchar teacher_kind
+        varchar field_attend_insurance
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+        varchar reason
+    }
+
+    TOYO_STUD_BIBLE_MEMORY {
+        varchar enroll_date PK
+        varchar ban PK, FK
+        varchar stud_no PK, FK
+        varchar degree_no
+        varchar pass_no
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+        varchar present
+        varchar bible_chul
+    }
+
+    TOYO_STUD_MEMORY {
+        varchar enroll_date PK
+        varchar ban PK, FK
+        varchar stud_no PK, FK
+        varchar memory_kind_1
+        varchar memory_kind_2
+        varchar memory_kind_3
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_STUD_CHUL {
+        varchar enroll_date PK
+        varchar ban PK, FK
+        varchar stud_no PK, FK
+        varchar chul_kind
+        varchar reason
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_STUD_DREAM {
+        varchar enroll_date PK
+        varchar ban PK, FK
+        varchar stud_no PK, FK
+        varchar dream_kind_1
+        varchar dream_kind_2
+        varchar dream_kind_3
+        varchar use_yn
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_STUD_DREAM_YEAR_COURSE {
+        varchar stud_no PK, FK
+        varchar year PK
+        varchar quarter PK
+        varchar dream_kind PK, FK
+        varchar use_yn
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_STUD_DREAM_COURSE {
+        varchar stud_no PK, FK
+        varchar year PK
+        varchar quarter PK
+        varchar dream_kind PK, FK
+        varchar use_yn
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_STUD_SCORE {
+        varchar enroll_date PK
+        varchar ban PK, FK
+        varchar stud_no PK, FK
+        varchar subject PK, FK
+        int score
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_STUD_SCORE_HIST {
+        int_identity seq PK
+        varchar gubun PK
+        varchar enroll_date PK, FK
+        varchar ban PK, FK
+        varchar stud_no PK, FK
+        varchar subject PK, FK
+        int score
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    HIGH_SCHOOL_TEACHER_CHUL_CODE_NAME {
+        varchar teacher_kind PK
+        varchar ban PK, FK
+        varchar ban_name
+        varchar use_yn
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_TEACHER_CHUL {
+        varchar enroll_date PK
+        varchar teacher_kind PK, FK
+        varchar ban PK, FK
+        varchar chul_yn
+        varchar reason
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_TEAM_GAME_SCORE {
+        varchar enroll_date PK
+        varchar kind PK, FK
+        varchar team PK
+        int score
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_TEAM_GAME_SCORE_ROWS {
+        varchar enroll_date PK, FK
+        varchar kind PK, FK
+        varchar team PK, FK
+        int seq PK
+        int score
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    TOYO_ID_INFO_HIST {
+        varchar id PK, FK
+        varchar enroll_date PK
+        varchar mac_address
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    TOYO_CODE_NAME {
+        varchar opt PK
+        varchar code PK
+        varchar code_name
+        varchar use_yn
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+        varchar contents
+        varchar kind_name
+        varchar detail_code
+    }
+
+    TOYO_REG_DATE_POSS {
+        varchar poss_date PK
+        varchar use_yn
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+    }
+
+    TOYO_BAN_MENU_NAME {
+        varchar menu PK
+        varchar menu_name
+        varchar src_name
+        varchar order_by
+        varchar level
+        varchar group_no
+        varchar use_yn
+        varchar menu_code
+        varchar reg_date
+        varchar reg_id
+        varchar mod_date
+        varchar mod_id
+        varchar go_but_yn
+        varchar go_but_nm
+        varchar go_but_order_by
+        varchar mobile_menu_name
+        varchar mobile_use_yn
+        varchar mobile_order_by
+        varchar mobile_but_yn
+        varchar mobile_but_nm
+        varchar mobile_but_order_by
+    }
+
+    MD5ENC {
+        varchar userid PK
+        varchar passwd
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    TOYO_STUD_INFO ||--o{ TOYO_STUD_FIELD_ATTEND : "stud_no FK"
+    TOYO_STUD_INFO ||--o{ TOYO_STUD_BIBLE_MEMORY : "stud_no FK"
+    TOYO_STUD_INFO ||--o| TOYO_STUD_REG_FEE : "stud_no FK"
+    TOYO_STUD_INFO ||--o{ TOYO_STUD_DREAM_YEAR_COURSE : "stud_no FK"
+    TOYO_STUD_INFO ||--o{ TOYO_STUD_DREAM_COURSE : "stud_no FK"
+    TOYO_STUD_INFO ||--o| TOYO_STUD_2HAKGI_NEW_INFO : "stud_no FK"
+    TOYO_STUD_INFO ||--o| TOYO_STUD_NEW_INFO : "stud_no FK"
+    TOYO_STUD_INFO ||--o| TOYO_STUD_2HAKGI_INFO : "stud_no FK"
+    TOYO_STUD_INFO ||--o{ TOYO_STUD_DREAM : "stud_no FK"
+    TOYO_STUD_INFO ||--o{ TOYO_STUD_MEMORY : "stud_no FK"
+    TOYO_STUD_INFO ||--o{ TOYO_STUD_CHUL : "stud_no FK"
+    TOYO_STUD_INFO ||--o{ TOYO_STUD_SCORE_HIST : "stud_no FK"
+    TOYO_STUD_INFO ||--o{ TOYO_STUD_SCORE : "stud_no FK"
+    TOYO_BAN_CODE_NAME ||--o{ TOYO_STUD_FIELD_ATTEND : "ban FK"
+    TOYO_BAN_CODE_NAME ||--o{ TOYO_STUD_BIBLE_MEMORY : "ban FK"
+    TOYO_BAN_CODE_NAME ||--o{ TOYO_STUD_2HAKGI_INFO : "ban FK"
+    TOYO_BAN_CODE_NAME ||--o{ TOYO_STUD_DREAM : "ban FK"
+    TOYO_BAN_CODE_NAME ||--o{ HIGH_SCHOOL_TEACHER_CHUL_CODE_NAME : "ban FK"
+    TOYO_BAN_CODE_NAME ||--o{ TOYO_TEACHER_CHUL : "ban FK"
+    TOYO_BAN_CODE_NAME ||--o{ TOYO_STUD_MEMORY : "ban FK"
+    TOYO_BAN_CODE_NAME ||--o{ TOYO_STUD_CHUL : "ban FK"
+    TOYO_BAN_CODE_NAME ||--o{ TOYO_STUD_SCORE_HIST : "ban FK"
+    TOYO_BAN_CODE_NAME ||--o{ TOYO_STUD_SCORE : "ban FK"
+    TOYO_BAN_CODE_NAME ||--o{ TOYO_STUD_INFO : "ban FK"
+    TOYO_DREAM_KIND ||--o{ TOYO_STUD_DREAM_YEAR_COURSE : "dream_kind FK"
+    TOYO_DREAM_KIND ||--o{ TOYO_STUD_DREAM_COURSE : "dream_kind FK"
+    TOYO_DREAM_KIND ||--o{ TOYO_STUD_INFO : "dream_kind FK"
+    TOYO_KIND_NAME ||--o{ TOYO_TEAM_GAME_SCORE_ROWS : "kind FK"
+    TOYO_KIND_NAME ||--o{ TOYO_TEAM_GAME_SCORE : "kind FK"
+    TOYO_STUD_CODE_NAME ||--o{ TOYO_STUD_SCORE_HIST : "subject FK"
+    TOYO_STUD_CODE_NAME ||--o{ TOYO_STUD_SCORE : "subject FK"
+    TOYO_ID_INFO ||--o{ TOYO_ID_INFO_HIST : "id FK"
+    HIGH_SCHOOL_TEACHER_CHUL_CODE_NAME ||--o{ TOYO_TEACHER_CHUL : "teacher_kind+ban FK"
+    TOYO_TEAM_GAME_SCORE ||--o{ TOYO_TEAM_GAME_SCORE_ROWS : "enroll_date+kind+team FK"
+    TOYO_STUD_SCORE ||--o{ TOYO_STUD_SCORE_HIST : "enroll_date+ban+stud_no+subject FK"
