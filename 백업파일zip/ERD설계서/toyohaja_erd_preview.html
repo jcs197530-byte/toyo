@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>토요하자 DB ERD 미리보기</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<style>
+  body { font-family: -apple-system, sans-serif; margin: 24px; background: #fafafa; }
+  h1 { font-size: 18px; }
+  .mermaid { background: white; padding: 16px; }
+</style>
+</head>
+<body>
+<h1>토요하자 DB ERD (PostgreSQL 16, PK 기준 매칭)</h1>
+<div class="mermaid" id="diagram">
+## 3-1. ERD
+
+```mermaid
+---
+title: 토요하자 DB ERD (PostgreSQL 16)
+---
+erDiagram
+
+    toyo_ban_code_name {
+        varchar ban PK
+        varchar ban_name
+        varchar ban_hp
+        bytea ban_hp_enc
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_ban_menu_name {
+        varchar menu PK
+        varchar menu_name
+        varchar src_name
+        varchar order_by
+        varchar mobile_order_by
+        varchar level
+        varchar group_no
+        varchar use_yn
+        varchar mobile_use_yn
+        varchar menu_code
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+        varchar go_but_yn
+        varchar go_but_nm
+        varchar go_but_order_by
+        varchar mobile_menu_name
+        varchar mobile_but_yn
+        varchar mobile_but_nm
+        varchar mobile_but_order_by
+    }
+
+    toyo_bible_contest {
+        varchar contest_code PK
+        varchar contest_rank
+        varchar contest_point
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_code_name {
+        varchar opt PK
+        varchar code PK
+        varchar code_name
+        varchar kind_name
+        varchar contents
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_dream_kind {
+        varchar dream_kind PK
+        varchar dream_kind_name
+        varchar grade
+        varchar year_course
+        varchar year
+        varchar quarter
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_kind_name {
+        varchar kind PK
+        varchar kind_name
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_code_name {
+        varchar subject PK
+        varchar subject_name
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_dream_support_grade {
+        varchar dream_kind PK,FK
+        varchar support_grade
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_field_attend_teacher {
+        varchar teacher_no PK
+        varchar teacher_name
+        varchar sex
+        varchar hp
+        varchar field_attend_kind
+        varchar field_attend_nausea
+        varchar field_attend_bus
+        varchar teacher_kind
+        varchar field_attend_insurance
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+        varchar reason
+    }
+
+    toyo_teacher_chul_code_name {
+        varchar teacher_kind PK
+        varchar ban PK,FK
+        varchar ban_name
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_id_info {
+        varchar id PK
+        varchar passwd
+        varchar k_name
+        varchar use_yn
+        varchar ssn
+        varchar token
+        varchar auth
+        timestamp login_first_time
+        timestamp login_last_time
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+        varchar id_img_path
+        varchar id_img_name
+        varchar group_code
+        bytea teacher_hp_no_enc
+    }
+
+    md5enc {
+        integer seq PK
+        varchar userid
+        varchar passwd
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_id_info_hist {
+        varchar id PK,FK
+        varchar enroll_date PK
+        varchar mac_address
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_info {
+        varchar stud_no PK
+        varchar ban FK
+        varchar stud_name
+        varchar grade
+        varchar team
+        varchar sex
+        varchar one_year_yn
+        varchar dream_kind FK
+        bytea parents_no_hp_enc
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+        varchar attend_yn
+        varchar stud_img_path
+        varchar stud_img_name
+        varchar parents_name
+    }
+
+    toyo_stud_2hakgi_info {
+        varchar stud_no PK,FK
+        varchar ban FK
+        varchar stud_name
+        varchar grade
+        varchar team
+        varchar rereg_kind
+        varchar reason
+        varchar enroll_date
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_2hakgi_new_info {
+        varchar stud_no PK,FK
+        varchar stud_name
+        varchar sex
+        varchar grade
+        varchar parent_name
+        varchar parent_hp
+        varchar request_teacher_name
+        varchar request_method
+        varchar church_reg_status
+        varchar etc
+        varchar reg_fee_kind
+        varchar progress_status
+        varchar enroll_date
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+        varchar dream_kind_1
+        varchar dream_kind_2
+        varchar dream_kind_3
+    }
+
+    toyo_stud_new_info {
+        varchar stud_no PK,FK
+        varchar stud_name
+        varchar sex
+        varchar grade
+        varchar parent_name
+        varchar parent_hp
+        varchar request_teacher_name
+        varchar request_method
+        varchar church_reg_status
+        varchar etc
+        varchar reg_fee_kind
+        varchar progress_status
+        varchar enroll_date
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+        varchar dream_kind_1
+        varchar dream_kind_2
+        varchar dream_kind_3
+    }
+
+    toyo_stud_reg_fee {
+        varchar stud_no PK,FK
+        varchar reg_fee_kind
+        varchar reason
+        varchar new_yn
+        varchar year
+        varchar quarter
+        varchar enroll_date
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_field_attend {
+        varchar enroll_date PK
+        varchar ban PK,FK
+        varchar stud_no PK,FK
+        varchar field_attend_kind
+        varchar reason
+        varchar field_attend_nausea
+        varchar field_attend_bus
+        varchar field_attend_insurance
+        varchar confirm_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_bible_memory {
+        varchar enroll_date PK
+        varchar ban PK,FK
+        varchar stud_no PK,FK
+        varchar degree_no
+        varchar pass_no
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+        varchar present
+        varchar bible_chul
+    }
+
+    toyo_stud_chul {
+        varchar enroll_date PK
+        varchar ban PK,FK
+        varchar stud_no PK,FK
+        varchar chul_kind
+        varchar reason
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_dream {
+        varchar enroll_date PK
+        varchar ban PK,FK
+        varchar stud_no PK,FK
+        varchar dream_kind_1
+        varchar dream_kind_2
+        varchar dream_kind_3
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_dream_course {
+        varchar stud_no PK,FK
+        varchar year PK
+        varchar quarter PK
+        varchar dream_kind PK,FK
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_dream_year_course {
+        varchar stud_no PK,FK
+        varchar year PK
+        varchar quarter PK
+        varchar dream_kind PK,FK
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_memory {
+        varchar enroll_date PK
+        varchar ban PK,FK
+        varchar stud_no PK,FK
+        varchar memory_kind_1
+        varchar memory_kind_2
+        varchar memory_kind_3
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_score {
+        varchar enroll_date PK
+        varchar ban PK,FK
+        varchar stud_no PK,FK
+        varchar subject PK,FK
+        integer score
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_stud_score_hist {
+        integer seq PK
+        varchar gubun PK
+        varchar enroll_date PK
+        varchar ban PK,FK
+        varchar stud_no PK,FK
+        varchar subject PK,FK
+        integer score
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_teacher_chul {
+        varchar enroll_date PK
+        varchar teacher_kind PK,FK
+        varchar ban PK,FK
+        varchar chul_yn
+        varchar reason
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_team_game_score {
+        varchar enroll_date PK
+        varchar kind PK
+        varchar team PK
+        integer score
+        varchar display_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_team_game_score_rows {
+        varchar enroll_date PK
+        varchar kind PK
+        varchar team PK
+        integer seq PK
+        integer score
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_team_score_plus {
+        varchar enroll_date PK
+        varchar kind PK
+        varchar ban PK
+        varchar team PK
+        integer score
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_point {
+        varchar enroll_date PK
+        varchar kind PK,FK
+        varchar stud_no PK,FK
+        varchar point
+        varchar etc
+        varchar ban FK
+        varchar team
+        varchar top_team_kor
+        varchar chul_kind
+        varchar point_reg_kind
+        varchar point_event_kind
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_point_payment {
+        varchar enroll_date PK
+        varchar stud_no PK,FK
+        varchar point
+        varchar etc
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_reg_date_poss {
+        varchar seq PK
+        varchar poss_date PK
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_notice_info {
+        varchar notice_no PK
+        varchar title
+        varchar contents
+        varchar notice_start_date
+        varchar notice_end_date
+        varchar use_yn
+        timestamp reg_date
+        varchar reg_id
+        timestamp mod_date
+        varchar mod_id
+    }
+
+    toyo_ban_code_name ||--o{ toyo_stud_info : "ban FK"
+    toyo_dream_kind ||--o{ toyo_stud_info : "dream_kind FK"
+    toyo_ban_code_name ||--o{ toyo_stud_2hakgi_info : "ban FK"
+    toyo_stud_info ||--o{ toyo_stud_2hakgi_info : "stud_no FK"
+    toyo_stud_info ||--o{ toyo_stud_2hakgi_new_info : "stud_no FK"
+    toyo_stud_info ||--o{ toyo_stud_new_info : "stud_no FK"
+    toyo_stud_info ||--o{ toyo_stud_reg_fee : "stud_no FK"
+    toyo_ban_code_name ||--o{ toyo_stud_field_attend : "ban FK"
+    toyo_stud_info ||--o{ toyo_stud_field_attend : "stud_no FK"
+    toyo_ban_code_name ||--o{ toyo_stud_bible_memory : "ban FK"
+    toyo_stud_info ||--o{ toyo_stud_bible_memory : "stud_no FK"
+    toyo_ban_code_name ||--o{ toyo_stud_chul : "ban FK"
+    toyo_stud_info ||--o{ toyo_stud_chul : "stud_no FK"
+    toyo_ban_code_name ||--o{ toyo_stud_dream : "ban FK"
+    toyo_stud_info ||--o{ toyo_stud_dream : "stud_no FK"
+    toyo_stud_info ||--o{ toyo_stud_dream_course : "stud_no FK"
+    toyo_dream_kind ||--o{ toyo_stud_dream_course : "dream_kind FK"
+    toyo_stud_info ||--o{ toyo_stud_dream_year_course : "stud_no FK"
+    toyo_dream_kind ||--o{ toyo_stud_dream_year_course : "dream_kind FK"
+    toyo_dream_kind ||--o{ toyo_stud_dream_support_grade : "dream_kind FK"
+    toyo_ban_code_name ||--o{ toyo_stud_memory : "ban FK"
+    toyo_stud_info ||--o{ toyo_stud_memory : "stud_no FK"
+    toyo_ban_code_name ||--o{ toyo_stud_score : "ban FK"
+    toyo_stud_info ||--o{ toyo_stud_score : "stud_no FK"
+    toyo_stud_code_name ||--o{ toyo_stud_score : "subject FK"
+    toyo_ban_code_name ||--o{ toyo_stud_score_hist : "ban FK"
+    toyo_stud_info ||--o{ toyo_stud_score_hist : "stud_no FK"
+    toyo_stud_code_name ||--o{ toyo_stud_score_hist : "subject FK"
+    toyo_ban_code_name ||--o{ toyo_teacher_chul : "ban FK"
+    toyo_teacher_chul_code_name ||--o{ toyo_teacher_chul : "teacher_kind+ban FK"
+    toyo_ban_code_name ||--o{ toyo_teacher_chul_code_name : "ban FK"
+    toyo_id_info ||--o{ toyo_id_info_hist : "id FK"
+    toyo_ban_code_name ||--o{ toyo_point : "ban FK"
+    toyo_stud_info ||--o{ toyo_point : "stud_no FK"
+    toyo_kind_name ||--o{ toyo_point : "kind FK"
+    toyo_stud_info ||--o{ toyo_point_payment : "stud_no FK"
+```
+
+## 3-2. DDL
+
+```sql
+-- ============================================
+-- 토요하자 DB DDL (PostgreSQL 16)
+-- 기준: 운영 서버 SQL 덤프(toyo테이블스키마.sql)
+-- 제외: 백업/임시/pack/날짜suffix 테이블, MySQL 시스템 테이블
+-- 정책: 모든 FK는 ON DELETE CASCADE, REG_DATE/MOD_DATE는 TIMESTAMP로 통일
+-- ============================================
+
+CREATE TABLE toyo_ban_code_name (
+    ban VARCHAR(3),
+    ban_name VARCHAR(100),
+    ban_hp VARCHAR(100),
+    ban_hp_enc BYTEA,
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_ban_code_name PRIMARY KEY (ban)
+);
+
+CREATE TABLE toyo_ban_menu_name (
+    menu VARCHAR(2),
+    menu_name VARCHAR(100),
+    src_name VARCHAR(100),
+    order_by VARCHAR(2),
+    mobile_order_by VARCHAR(2),
+    level VARCHAR(1),
+    group_no VARCHAR(2),
+    use_yn VARCHAR(1),
+    mobile_use_yn VARCHAR(1),
+    menu_code VARCHAR(2),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    go_but_yn VARCHAR(1),
+    go_but_nm VARCHAR(20),
+    go_but_order_by VARCHAR(2),
+    mobile_menu_name VARCHAR(100),
+    mobile_but_yn VARCHAR(1),
+    mobile_but_nm VARCHAR(20),
+    mobile_but_order_by VARCHAR(2),
+    CONSTRAINT pk_toyo_ban_menu_name PRIMARY KEY (menu)
+);
+
+CREATE TABLE toyo_bible_contest (
+    contest_code VARCHAR(3),
+    contest_rank VARCHAR(3),
+    contest_point VARCHAR(3),
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_bible_contest PRIMARY KEY (contest_code)
+);
+
+CREATE TABLE toyo_code_name (
+    opt VARCHAR(20),
+    code VARCHAR(6),
+    code_name VARCHAR(100),
+    kind_name VARCHAR(200),
+    contents VARCHAR(4000),
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_code_name PRIMARY KEY (opt, code)
+);
+
+CREATE TABLE toyo_dream_kind (
+    dream_kind VARCHAR(3),
+    dream_kind_name VARCHAR(100),
+    grade VARCHAR(10),
+    year_course VARCHAR(1),
+    year VARCHAR(4),
+    quarter VARCHAR(1),
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_dream_kind PRIMARY KEY (dream_kind)
+);
+
+CREATE TABLE toyo_kind_name (
+    kind VARCHAR(2),
+    kind_name VARCHAR(100),
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_kind_name PRIMARY KEY (kind)
+);
+
+CREATE TABLE toyo_stud_code_name (
+    subject VARCHAR(3),
+    subject_name VARCHAR(100),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_stud_code_name PRIMARY KEY (subject)
+);
+
+CREATE TABLE toyo_stud_dream_support_grade (
+    dream_kind VARCHAR(3),
+    support_grade VARCHAR(6),
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_stud_dream_support_grade PRIMARY KEY (dream_kind)
+);
+
+CREATE TABLE toyo_stud_field_attend_teacher (
+    teacher_no VARCHAR(5),
+    teacher_name VARCHAR(100),
+    sex VARCHAR(1),
+    hp VARCHAR(11),
+    field_attend_kind VARCHAR(2),
+    field_attend_nausea VARCHAR(2),
+    field_attend_bus VARCHAR(2),
+    teacher_kind VARCHAR(2),
+    field_attend_insurance VARCHAR(2),
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    reason VARCHAR(200),
+    CONSTRAINT pk_toyo_stud_field_attend_teacher PRIMARY KEY (teacher_no)
+);
+
+CREATE TABLE toyo_teacher_chul_code_name (
+    teacher_kind VARCHAR(2),
+    ban VARCHAR(3),
+    ban_name VARCHAR(100),
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_teacher_chul_code_name PRIMARY KEY (teacher_kind, ban)
+);
+
+CREATE TABLE toyo_id_info (
+    id VARCHAR(20),
+    passwd VARCHAR(64) NOT NULL,
+    k_name VARCHAR(64) NOT NULL,
+    use_yn VARCHAR(1),
+    ssn VARCHAR(4),
+    token VARCHAR(200),
+    auth VARCHAR(2),
+    login_first_time TIMESTAMP,
+    login_last_time TIMESTAMP,
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    id_img_path VARCHAR(200),
+    id_img_name VARCHAR(200),
+    group_code VARCHAR(2),
+    teacher_hp_no_enc BYTEA,
+    CONSTRAINT pk_toyo_id_info PRIMARY KEY (id)
+);
+
+CREATE TABLE md5enc (
+    seq INTEGER,
+    userid VARCHAR(20) NOT NULL,
+    passwd VARCHAR(32) NOT NULL,
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_md5enc PRIMARY KEY (seq)
+);
+
+CREATE TABLE toyo_id_info_hist (
+    id VARCHAR(20),
+    enroll_date VARCHAR(8),
+    mac_address VARCHAR(100),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_id_info_hist PRIMARY KEY (id, enroll_date)
+);
+
+CREATE TABLE toyo_stud_info (
+    stud_no VARCHAR(5),
+    ban VARCHAR(3),
+    stud_name VARCHAR(100),
+    grade VARCHAR(1),
+    team VARCHAR(20),
+    sex VARCHAR(1),
+    one_year_yn VARCHAR(1),
+    dream_kind VARCHAR(3),
+    parents_no_hp_enc BYTEA,
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    attend_yn VARCHAR(1),
+    stud_img_path VARCHAR(200),
+    stud_img_name VARCHAR(200),
+    parents_name VARCHAR(20),
+    CONSTRAINT pk_toyo_stud_info PRIMARY KEY (stud_no)
+);
+
+CREATE TABLE toyo_stud_2hakgi_info (
+    stud_no VARCHAR(5),
+    ban VARCHAR(3),
+    stud_name VARCHAR(100),
+    grade VARCHAR(1),
+    team VARCHAR(20),
+    rereg_kind VARCHAR(2),
+    reason VARCHAR(200),
+    enroll_date VARCHAR(8),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_stud_2hakgi_info PRIMARY KEY (stud_no)
+);
+
+CREATE TABLE toyo_stud_2hakgi_new_info (
+    stud_no VARCHAR(5),
+    stud_name VARCHAR(100),
+    sex VARCHAR(1),
+    grade VARCHAR(1),
+    parent_name VARCHAR(20),
+    parent_hp VARCHAR(11),
+    request_teacher_name VARCHAR(20),
+    request_method VARCHAR(100),
+    church_reg_status VARCHAR(3),
+    etc VARCHAR(400),
+    reg_fee_kind VARCHAR(2),
+    progress_status VARCHAR(3),
+    enroll_date VARCHAR(8),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    dream_kind_1 VARCHAR(3),
+    dream_kind_2 VARCHAR(3),
+    dream_kind_3 VARCHAR(3),
+    CONSTRAINT pk_toyo_stud_2hakgi_new_info PRIMARY KEY (stud_no)
+);
+
+CREATE TABLE toyo_stud_new_info (
+    stud_no VARCHAR(5),
+    stud_name VARCHAR(100),
+    sex VARCHAR(1),
+    grade VARCHAR(1),
+    parent_name VARCHAR(20),
+    parent_hp VARCHAR(11),
+    request_teacher_name VARCHAR(20),
+    request_method VARCHAR(100),
+    church_reg_status VARCHAR(3),
+    etc VARCHAR(400),
+    reg_fee_kind VARCHAR(2),
+    progress_status VARCHAR(3),
+    enroll_date VARCHAR(8),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    dream_kind_1 VARCHAR(3),
+    dream_kind_2 VARCHAR(3),
+    dream_kind_3 VARCHAR(3),
+    CONSTRAINT pk_toyo_stud_new_info PRIMARY KEY (stud_no)
+);
+
+CREATE TABLE toyo_stud_reg_fee (
+    stud_no VARCHAR(5),
+    reg_fee_kind VARCHAR(2),
+    reason VARCHAR(200),
+    new_yn VARCHAR(1),
+    year VARCHAR(4),
+    quarter VARCHAR(1),
+    enroll_date VARCHAR(8),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_stud_reg_fee PRIMARY KEY (stud_no)
+);
+
+CREATE TABLE toyo_stud_field_attend (
+    enroll_date VARCHAR(8),
+    ban VARCHAR(3),
+    stud_no VARCHAR(5),
+    field_attend_kind VARCHAR(2),
+    reason VARCHAR(200),
+    field_attend_nausea VARCHAR(2),
+    field_attend_bus VARCHAR(2),
+    field_attend_insurance VARCHAR(2) NOT NULL,
+    confirm_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_stud_field_attend PRIMARY KEY (enroll_date, ban, stud_no)
+);
+
+CREATE TABLE toyo_stud_bible_memory (
+    enroll_date VARCHAR(8),
+    ban VARCHAR(3),
+    stud_no VARCHAR(5),
+    degree_no VARCHAR(2),
+    pass_no VARCHAR(2),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    present VARCHAR(3),
+    bible_chul VARCHAR(2),
+    CONSTRAINT pk_toyo_stud_bible_memory PRIMARY KEY (enroll_date, ban, stud_no)
+);
+
+CREATE TABLE toyo_stud_chul (
+    enroll_date VARCHAR(8),
+    ban VARCHAR(3),
+    stud_no VARCHAR(5),
+    chul_kind VARCHAR(2),
+    reason VARCHAR(200),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_stud_chul PRIMARY KEY (enroll_date, ban, stud_no)
+);
+
+CREATE TABLE toyo_stud_dream (
+    enroll_date VARCHAR(8),
+    ban VARCHAR(3),
+    stud_no VARCHAR(5),
+    dream_kind_1 VARCHAR(3),
+    dream_kind_2 VARCHAR(3),
+    dream_kind_3 VARCHAR(3),
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_stud_dream PRIMARY KEY (enroll_date, ban, stud_no)
+);
+
+CREATE TABLE toyo_stud_dream_course (
+    stud_no VARCHAR(5),
+    year VARCHAR(4),
+    quarter VARCHAR(1),
+    dream_kind VARCHAR(3),
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_stud_dream_course PRIMARY KEY (stud_no, year, quarter, dream_kind)
+);
+
+CREATE TABLE toyo_stud_dream_year_course (
+    stud_no VARCHAR(5),
+    year VARCHAR(4),
+    quarter VARCHAR(1),
+    dream_kind VARCHAR(3),
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_stud_dream_year_course PRIMARY KEY (stud_no, year, quarter, dream_kind)
+);
+
+CREATE TABLE toyo_stud_memory (
+    enroll_date VARCHAR(8),
+    ban VARCHAR(3),
+    stud_no VARCHAR(5),
+    memory_kind_1 VARCHAR(3),
+    memory_kind_2 VARCHAR(3),
+    memory_kind_3 VARCHAR(3),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_stud_memory PRIMARY KEY (enroll_date, ban, stud_no)
+);
+
+CREATE TABLE toyo_stud_score (
+    enroll_date VARCHAR(8),
+    ban VARCHAR(3),
+    stud_no VARCHAR(5),
+    subject VARCHAR(3),
+    score INTEGER,
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_stud_score PRIMARY KEY (enroll_date, ban, stud_no, subject)
+);
+
+CREATE TABLE toyo_stud_score_hist (
+    seq INTEGER GENERATED BY DEFAULT AS IDENTITY,
+    gubun VARCHAR(1),
+    enroll_date VARCHAR(8),
+    ban VARCHAR(3),
+    stud_no VARCHAR(5),
+    subject VARCHAR(3),
+    score INTEGER,
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_stud_score_hist PRIMARY KEY (seq, gubun, enroll_date, ban, stud_no, subject)
+);
+
+CREATE TABLE toyo_teacher_chul (
+    enroll_date VARCHAR(8),
+    teacher_kind VARCHAR(2),
+    ban VARCHAR(3),
+    chul_yn VARCHAR(1),
+    reason VARCHAR(200),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_teacher_chul PRIMARY KEY (enroll_date, teacher_kind, ban)
+);
+
+CREATE TABLE toyo_team_game_score (
+    enroll_date VARCHAR(8),
+    kind VARCHAR(20),
+    team VARCHAR(20),
+    score INTEGER,
+    display_yn VARCHAR(100),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_team_game_score PRIMARY KEY (enroll_date, kind, team)
+);
+
+CREATE TABLE toyo_team_game_score_rows (
+    enroll_date VARCHAR(8),
+    kind VARCHAR(20),
+    team VARCHAR(20),
+    seq INTEGER,
+    score INTEGER,
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_team_game_score_rows PRIMARY KEY (enroll_date, kind, team, seq)
+);
+
+CREATE TABLE toyo_team_score_plus (
+    enroll_date VARCHAR(8),
+    kind VARCHAR(20),
+    ban VARCHAR(20),
+    team VARCHAR(20),
+    score INTEGER,
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_team_score_plus PRIMARY KEY (enroll_date, kind, ban, team)
+);
+
+CREATE TABLE toyo_point (
+    enroll_date VARCHAR(8),
+    kind VARCHAR(2),
+    stud_no VARCHAR(5),
+    point VARCHAR(3),
+    etc VARCHAR(400),
+    ban VARCHAR(3),
+    team VARCHAR(20),
+    top_team_kor VARCHAR(400),
+    chul_kind VARCHAR(2),
+    point_reg_kind VARCHAR(2),
+    point_event_kind VARCHAR(2),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_point PRIMARY KEY (enroll_date, kind, stud_no)
+);
+
+CREATE TABLE toyo_point_payment (
+    enroll_date VARCHAR(8),
+    stud_no VARCHAR(5),
+    point VARCHAR(3),
+    etc VARCHAR(400),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_point_payment PRIMARY KEY (enroll_date, stud_no)
+);
+
+CREATE TABLE toyo_reg_date_poss (
+    seq VARCHAR(3),
+    poss_date VARCHAR(8),
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_reg_date_poss PRIMARY KEY (seq, poss_date)
+);
+
+CREATE TABLE toyo_notice_info (
+    notice_no VARCHAR(5),
+    title VARCHAR(200) NOT NULL,
+    contents VARCHAR(4000) NOT NULL,
+    notice_start_date VARCHAR(8),
+    notice_end_date VARCHAR(8),
+    use_yn VARCHAR(1),
+    reg_date TIMESTAMP,
+    reg_id VARCHAR(30),
+    mod_date TIMESTAMP,
+    mod_id VARCHAR(30),
+    CONSTRAINT pk_toyo_notice_info PRIMARY KEY (notice_no)
+);
+
+-- ============================================
+-- Foreign Key 제약 (모두 ON DELETE CASCADE)
+-- ============================================
+
+ALTER TABLE toyo_stud_info ADD CONSTRAINT fk_toyo_stud_info_ban FOREIGN KEY (ban) REFERENCES toyo_ban_code_name (ban) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_info ADD CONSTRAINT fk_toyo_stud_info_dream_kind FOREIGN KEY (dream_kind) REFERENCES toyo_dream_kind (dream_kind) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_2hakgi_info ADD CONSTRAINT fk_toyo_stud_2hakgi_info_ban FOREIGN KEY (ban) REFERENCES toyo_ban_code_name (ban) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_2hakgi_info ADD CONSTRAINT fk_toyo_stud_2hakgi_info_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_2hakgi_new_info ADD CONSTRAINT fk_toyo_stud_2hakgi_new_info_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_new_info ADD CONSTRAINT fk_toyo_stud_new_info_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_reg_fee ADD CONSTRAINT fk_toyo_stud_reg_fee_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_field_attend ADD CONSTRAINT fk_toyo_stud_field_attend_ban FOREIGN KEY (ban) REFERENCES toyo_ban_code_name (ban) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_field_attend ADD CONSTRAINT fk_toyo_stud_field_attend_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_bible_memory ADD CONSTRAINT fk_toyo_stud_bible_memory_ban FOREIGN KEY (ban) REFERENCES toyo_ban_code_name (ban) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_bible_memory ADD CONSTRAINT fk_toyo_stud_bible_memory_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_chul ADD CONSTRAINT fk_toyo_stud_chul_ban FOREIGN KEY (ban) REFERENCES toyo_ban_code_name (ban) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_chul ADD CONSTRAINT fk_toyo_stud_chul_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_dream ADD CONSTRAINT fk_toyo_stud_dream_ban FOREIGN KEY (ban) REFERENCES toyo_ban_code_name (ban) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_dream ADD CONSTRAINT fk_toyo_stud_dream_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_dream_course ADD CONSTRAINT fk_toyo_stud_dream_course_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_dream_course ADD CONSTRAINT fk_toyo_stud_dream_course_dream_kind FOREIGN KEY (dream_kind) REFERENCES toyo_dream_kind (dream_kind) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_dream_year_course ADD CONSTRAINT fk_toyo_stud_dream_year_course_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_dream_year_course ADD CONSTRAINT fk_toyo_stud_dream_year_course_dream_kind FOREIGN KEY (dream_kind) REFERENCES toyo_dream_kind (dream_kind) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_dream_support_grade ADD CONSTRAINT fk_toyo_stud_dream_support_grade_dream_kind FOREIGN KEY (dream_kind) REFERENCES toyo_dream_kind (dream_kind) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_memory ADD CONSTRAINT fk_toyo_stud_memory_ban FOREIGN KEY (ban) REFERENCES toyo_ban_code_name (ban) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_memory ADD CONSTRAINT fk_toyo_stud_memory_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_score ADD CONSTRAINT fk_toyo_stud_score_ban FOREIGN KEY (ban) REFERENCES toyo_ban_code_name (ban) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_score ADD CONSTRAINT fk_toyo_stud_score_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_score ADD CONSTRAINT fk_toyo_stud_score_subject FOREIGN KEY (subject) REFERENCES toyo_stud_code_name (subject) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_score_hist ADD CONSTRAINT fk_toyo_stud_score_hist_ban FOREIGN KEY (ban) REFERENCES toyo_ban_code_name (ban) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_score_hist ADD CONSTRAINT fk_toyo_stud_score_hist_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_stud_score_hist ADD CONSTRAINT fk_toyo_stud_score_hist_subject FOREIGN KEY (subject) REFERENCES toyo_stud_code_name (subject) ON DELETE CASCADE;
+ALTER TABLE toyo_teacher_chul ADD CONSTRAINT fk_toyo_teacher_chul_ban FOREIGN KEY (ban) REFERENCES toyo_ban_code_name (ban) ON DELETE CASCADE;
+ALTER TABLE toyo_teacher_chul ADD CONSTRAINT fk_toyo_teacher_chul_teacher_kind_ban FOREIGN KEY (teacher_kind, ban) REFERENCES toyo_teacher_chul_code_name (teacher_kind, ban) ON DELETE CASCADE;
+ALTER TABLE toyo_teacher_chul_code_name ADD CONSTRAINT fk_toyo_teacher_chul_code_name_ban FOREIGN KEY (ban) REFERENCES toyo_ban_code_name (ban) ON DELETE CASCADE;
+ALTER TABLE toyo_id_info_hist ADD CONSTRAINT fk_toyo_id_info_hist_id FOREIGN KEY (id) REFERENCES toyo_id_info (id) ON DELETE CASCADE;
+ALTER TABLE toyo_point ADD CONSTRAINT fk_toyo_point_ban FOREIGN KEY (ban) REFERENCES toyo_ban_code_name (ban) ON DELETE CASCADE;
+ALTER TABLE toyo_point ADD CONSTRAINT fk_toyo_point_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+ALTER TABLE toyo_point ADD CONSTRAINT fk_toyo_point_kind FOREIGN KEY (kind) REFERENCES toyo_kind_name (kind) ON DELETE CASCADE;
+ALTER TABLE toyo_point_payment ADD CONSTRAINT fk_toyo_point_payment_stud_no FOREIGN KEY (stud_no) REFERENCES toyo_stud_info (stud_no) ON DELETE CASCADE;
+```
+
+
+</div>
+<script>
+  mermaid.initialize({ startOnLoad: true, er: { useMaxWidth: false } });
+</script>
+</body>
+</html>

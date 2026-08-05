@@ -1,0 +1,229 @@
+"""
+신규 toyo 프로젝트 SQLAlchemy 모델 (PostgreSQL 16 / psycopg3 / SQLAlchemy 2.0)
+
+레거시 PHP+MySQL(MyISAM) 스키마(toyo테이블스키마.sql)를 그대로 이식한 것이 아니라,
+새 프로젝트에 맞게 아래 원칙으로 재설계했다.
+
+    구분          | 레거시(참고용)                  | 신규
+    -------------|--------------------------------|--------------------------------
+    계정         | toyo_id_info                    | Account
+    세션/로그인  | toyo_id_info.TOKEN, 로그인 이력  | LoginSession
+    반(class)    | toyo_ban_code_name               | ClassRoom
+    학생         | toyo_stud_info                   | Student
+    출석         | toyo_stud_chul                   | Attendance
+    성적         | toyo_stud_score / toyo_stud_code_name(과목코드) | Score (SubjectCode Enum으로 대체)
+
+설계 변경 포인트
+    1. 복합 자연키(ENROLL_DATE+BAN+STUD_NO 등) 대신 정수 서러게이트 PK(id) + UniqueConstraint 사용.
+    2. varchar(8) 날짜 문자열 -> Date, varchar(1) Y/N -> Boolean, 코드성 컬럼 -> Enum.
+    3. 반복 저장되던 BAN/STUD_NAME 등은 FK 관계로 정규화. 출석/성적의 반 정보는 별도
+       스냅샷 컬럼 없이 student.class_room을 통해 조회한다(TOYO_STUD_CHUL.BAN처럼
+       레거시에만 있던 컬럼은 신규 스키마에서 두지 않음).
+    4. 비밀번호는 pwdlib(Argon2) 해시 문자열만 저장. 세션 토큰은 secrets.token_hex(32) 사용.
+"""
+import enum
+import secrets
+from datetime import date, datetime
+
+from sqlalchemy import (
+    CheckConstraint,
+    Date,
+    DateTime,
+    ForeignKey,
+    String,
+    UniqueConstraint,
+    func,
+)
+from sqlalchemy import Enum as SAEnum
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from database import Base
+
+
+# ======================================================================
+# 공통 Enum
+# ======================================================================
+
+class AccountRole(str, enum.Enum):
+    """계정 권한 (레거시 toyo_id_info.AUTH 대체)"""
+    ADMIN = "admin"
+    TEACHER = "teacher"
+
+
+class Sex(str, enum.Enum):
+    """성별 (레거시 SEX 컬럼 대체)"""
+    MALE = "M"
+    FEMALE = "F"
+
+
+class AttendanceStatus(str, enum.Enum):
+    """출석 상태 (레거시 toyo_stud_chul.CHUL_KIND 코드 대체)
+
+    레거시 toyo_code_name(OPT='CHUL_KIND') 실데이터 기준:
+        11=출석, 12=결석, 13=지각, 14=조퇴
+    마이그레이션 호환을 위해 enum value는 원본 코드값을 그대로 사용한다.
+    """
+    PRESENT = "11"      # 출석
+    ABSENT = "12"       # 결석
+    LATE = "13"         # 지각
+    EARLY_LEAVE = "14"  # 조퇴
+
+
+class Subject(str, enum.Enum):
+    """성적 과목 (레거시 toyo_stud_code_name 대체)
+    실제 과목 코드는 toyo_stud_code_name 마스터 데이터 확인 후 채워 넣을 것.
+    """
+    BIBLE = "bible"
+    ATTITUDE = "attitude"
+    ETC = "etc"
+
+
+# ======================================================================
+# 계정 / 세션
+# ======================================================================
+
+class Account(Base):
+    """교사/관리자 로그인 계정 (레거시 toyo_id_info 대체)"""
+    __tablename__ = "accounts"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)  # pwdlib(Argon2) 해시
+    name: Mapped[str] = mapped_column(String(64), nullable=False)
+    role: Mapped[AccountRole] = mapped_column(
+        SAEnum(AccountRole, name="account_role"), nullable=False, default=AccountRole.TEACHER
+    )
+    is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
+    last_login_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+
+    sessions: Mapped[list["LoginSession"]] = relationship(back_populates="account", cascade="all, delete-orphan")
+
+
+class LoginSession(Base):
+    """로그인 세션 (레거시 toyo_id_info.TOKEN / 로그인 이력 대체)
+
+    주의: SQLAlchemy의 DB 세션(sqlalchemy.orm.Session, 요청 단위 파이썬↔DB 연결)과
+    이름이 겹치므로 임포트 충돌 방지를 위해 클래스명은 LoginSession으로 둔다.
+    테이블명은 그대로 "sessions"를 유지한다.
+    """
+    __tablename__ = "sessions"
+
+    token: Mapped[str] = mapped_column(
+        String(64), primary_key=True, default=lambda: secrets.token_hex(32)
+    )
+    account_id: Mapped[int] = mapped_column(ForeignKey("accounts.id", ondelete="CASCADE"), nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    account: Mapped["Account"] = relationship(back_populates="sessions")
+
+
+# ======================================================================
+# 반 / 학생
+# ======================================================================
+
+class ClassRoom(Base):
+    """반(class) 마스터 (레거시 toyo_ban_code_name 대체)"""
+    __tablename__ = "classes"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    code: Mapped[str] = mapped_column(String(3), unique=True, nullable=False)  # 레거시 BAN 코드 하위호환용
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    phone: Mapped[str | None] = mapped_column(String(20))
+    is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+
+    students: Mapped[list["Student"]] = relationship(back_populates="class_room")
+
+
+class Student(Base):
+    """학생 기본 정보 (레거시 toyo_stud_info 대체)"""
+    __tablename__ = "students"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    class_id: Mapped[int | None] = mapped_column(ForeignKey("classes.id"))
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    grade: Mapped[int | None]  # 학년 (레거시 GRADE varchar(1) -> 정수로 정규화)
+    team: Mapped[str | None] = mapped_column(String(20))
+    sex: Mapped[Sex | None] = mapped_column(SAEnum(Sex, name="sex"))
+    parent_name: Mapped[str | None] = mapped_column(String(20))
+    parent_phone_enc: Mapped[bytes | None]  # 앱 레벨 암호화(예: Fernet) 저장, pwdlib와는 별개
+    is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+
+    class_room: Mapped["ClassRoom | None"] = relationship(back_populates="students")
+    attendances: Mapped[list["Attendance"]] = relationship(back_populates="student", cascade="all, delete-orphan")
+    scores: Mapped[list["Score"]] = relationship(back_populates="student", cascade="all, delete-orphan")
+
+
+# ======================================================================
+# 출석 / 성적
+# ======================================================================
+
+class Attendance(Base):
+    """학생 출석 (레거시 toyo_stud_chul 대체)
+
+    반(class) 정보는 별도로 저장하지 않고 student.class_room을 통해 조회한다
+    (레거시 TOYO_STUD_CHUL.BAN에 대응하는 컬럼이 신규 스키마에는 없음).
+    """
+    __tablename__ = "attendances"
+    __table_args__ = (
+        UniqueConstraint("student_id", "enroll_date", name="uq_attendance_student_date"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id", ondelete="CASCADE"), nullable=False)
+    enroll_date: Mapped[date] = mapped_column(Date, nullable=False)
+    status: Mapped[AttendanceStatus] = mapped_column(
+        SAEnum(AttendanceStatus, name="attendance_status"), nullable=False
+    )
+    reason: Mapped[str | None] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+
+    student: Mapped["Student"] = relationship(back_populates="attendances")
+
+
+class Score(Base):
+    """학생 성적 (레거시 toyo_stud_score 대체)"""
+    __tablename__ = "scores"
+    __table_args__ = (
+        UniqueConstraint("student_id", "enroll_date", "subject", name="uq_score_student_date_subject"),
+        CheckConstraint("score >= 0 AND score <= 100", name="ck_score_range"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id", ondelete="CASCADE"), nullable=False)
+    enroll_date: Mapped[date] = mapped_column(Date, nullable=False)
+    subject: Mapped[Subject] = mapped_column(SAEnum(Subject, name="subject"), nullable=False)
+    score: Mapped[int] = mapped_column(nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+
+    student: Mapped["Student"] = relationship(back_populates="scores")
